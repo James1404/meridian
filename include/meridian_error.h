@@ -1,15 +1,24 @@
 #ifndef MERIDIAN_ERROR_H
 #define MERIDIAN_ERROR_H
 
-typedef enum {
-    ErrorSeverity_Info,
-    ErrorSeverity_Warning,
-    ErrorSeverity_Error,
-} ErrorSeverity;
+#include <stdio.h>
 
-typedef void (*ErrorCallback)(const char* msg, ErrorSeverity severity);
-void Meridian_set_error_callback(ErrorCallback fn);
+#define MERIDIAN_ERROR(...) do {\
+    printf("ERROR: ");\
+    printf(__VA_ARGS__);\
+    printf("\n");\
+} while(0)
 
-void Meridian_error(const char* msg);
+#define MERIDIAN_WARNING(...) do {\
+    printf("WARNING: ");\
+    printf(__VA_ARGS__);\
+    printf("\n");\
+} while(0)
+
+#define MERIDIAN_INFO(...) do {\
+    printf("INFO: ");\
+    printf(__VA_ARGS__);\
+    printf("\n");\
+} while(0);
 
 #endif//MERIDIAN_ERROR_H

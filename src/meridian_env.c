@@ -42,7 +42,7 @@ Atom Env_get(String name) {
         }
     }
 
-    Meridian_error("Could not find symbol in current environment");
+    MERIDIAN_ERROR("Could not find symbol in current environment");
     return ATOM_NIL();
 }
 
@@ -61,7 +61,7 @@ void Env_set(String name, Atom atom) {
             env.locals = temp;
         }
         else {
-            Meridian_error("Env_set, realloc error");
+            MERIDIAN_ERROR("Env_set, realloc error");
             return;
         }
     }

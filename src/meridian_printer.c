@@ -9,7 +9,7 @@ void Printer_Atom(Atom atom) {
         } break;
         case ATOM_BOOLEAN: {
             bool v = GET_ATOM_BOOLEAN(atom);
-            printf(v ? "#t" : "#f");
+            printf("%s", v ? "#t" : "#f");
         } break;
         case ATOM_STRING: {
             String str = GET_ATOM_STRING(atom);

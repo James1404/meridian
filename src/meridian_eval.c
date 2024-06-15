@@ -69,7 +69,7 @@ Atom Eval_List(Atom atom) {
         Atom result = ATOM_NIL();
 
         if(list.length != GET_ATOM_FN(fn).args_length) {
-            Meridian_error("Invalid amount of arguments");
+            MERIDIAN_ERROR("Invalid amount of arguments");
             return ATOM_NIL();
         }
 
@@ -106,7 +106,7 @@ Atom Eval_Def(Atom atom) {
     List list = GET_ATOM_LIST(atom);
 
     if(list.length != 3) {
-        Meridian_error("invalid definition");
+        MERIDIAN_ERROR("invalid definition");
         return ATOM_NIL();
     }
 
@@ -132,7 +132,7 @@ Atom Eval_Fn(Atom atom) {
     for(u64 i = 0; i < GET_ATOM_LIST(args).length; i++) {
         Atom arg = GET_ATOM_LIST(args).data[i];
         if(arg.ty != ATOM_SYMBOL) {
-            Meridian_error("function parameters must all be symbols");
+            MERIDIAN_ERROR("function parameters must all be symbols");
             return ATOM_NIL();
         }
 

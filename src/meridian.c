@@ -28,6 +28,9 @@ Atom meridian_add(List args) {
     Atom result = ATOM_NUMBER(0);
 
     for(u64 i = 0; i < args.length; i++) {
+        if(args.data->ty != ATOM_NUMBER)
+            return ATOM_NIL();
+
         // TODO: Add type checking for args (aka, make sure their all numbers)
         GET_ATOM_NUMBER(result) += GET_ATOM_NUMBER(args.data[i]);
     }
@@ -39,6 +42,9 @@ Atom meridian_sub(List args) {
     Atom result = args.data[0];
 
     for(u64 i = 1; i < args.length; i++) {
+        if(args.data->ty != ATOM_NUMBER)
+            return ATOM_NIL();
+
         // TODO: Add type checking for args (aka, make sure their all numbers)
         GET_ATOM_NUMBER(result) -= GET_ATOM_NUMBER(args.data[i]);
     }
@@ -50,6 +56,9 @@ Atom meridian_mul(List args) {
     Atom result = args.data[0];
 
     for(u64 i = 1; i < args.length; i++) {
+        if(args.data->ty != ATOM_NUMBER)
+            return ATOM_NIL();
+
         // TODO: Add type checking for args (aka, make sure their all numbers)
         GET_ATOM_NUMBER(result) *= GET_ATOM_NUMBER(args.data[i]);
     }
@@ -61,6 +70,9 @@ Atom meridian_div(List args) {
     Atom result = args.data[0];
 
     for(u64 i = 1; i < args.length; i++) {
+        if(args.data->ty != ATOM_NUMBER)
+            return ATOM_NIL();
+
         // TODO: Add type checking for args (aka, make sure their all numbers)
         GET_ATOM_NUMBER(result) /= GET_ATOM_NUMBER(args.data[i]);
     }
@@ -68,9 +80,51 @@ Atom meridian_div(List args) {
     return result;
 }
 
+Atom meridian_eq(List args) {
+    if(args.length != 2) {
+        MERIDIAN_ERROR("expected two arguments to compare");
+        return ATOM_NIL();
+    }
+
+    Atom lhs = args.data[0];
+    Atom rhs = args.data[1];
+
+    if(lhs.ty != rhs.ty) {
+        MERIDIAN_ERROR("Arguments must be the same type");
+        return ATOM_NIL();
+    }
+
+    switch(lhs.ty) {
+        case ATOM_NUMBER: return ATOM_BOOLEAN(GET_ATOM_NUMBER(lhs) == GET_ATOM_NUMBER(rhs));
+        case ATOM_BOOLEAN: return ATOM_BOOLEAN(GET_ATOM_BOOLEAN(lhs) == GET_ATOM_BOOLEAN(rhs));
+        case ATOM_STRING: return ATOM_BOOLEAN(String_cmp(GET_ATOM_STRING(lhs), GET_ATOM_STRING(rhs)));
+        case ATOM_SYMBOL: return ATOM_BOOLEAN(String_cmp(GET_ATOM_STRING(lhs), GET_ATOM_STRING(rhs)));
+        case ATOM_KEYWORD: return ATOM_BOOLEAN(String_cmp(GET_ATOM_STRING(lhs), GET_ATOM_STRING(rhs)));
+        default: return ATOM_BOOLEAN(false);
+    }
+
+    return ATOM_BOOLEAN(false);
+}
+
+Atom meridian_not(List args) {
+    if(args.length != 1) {
+        MERIDIAN_ERROR("expected one argument");
+        return ATOM_NIL();
+    }
+
+    Atom arg = args.data[0];
+
+    if(arg.ty != ATOM_BOOLEAN) {
+        MERIDIAN_ERROR("Arguments must be a boolean");
+        return ATOM_NIL();
+    }
+
+    return ATOM_BOOLEAN(!GET_ATOM_BOOLEAN(arg));
+}
+
 Atom meridian_head(List args) {
     if(args.length != 1) {
-        Meridian_error("expected one arg");
+        MERIDIAN_ERROR("expected a single list");
         return ATOM_NIL();
     }
 
@@ -83,7 +137,7 @@ Atom meridian_head(List args) {
 
 Atom meridian_tail(List args) {
     if(args.length != 1) {
-        Meridian_error("expected one arg");
+        MERIDIAN_ERROR("expected a single list");
         return ATOM_NIL();
     }
 
@@ -96,7 +150,7 @@ Atom meridian_tail(List args) {
 
 Atom meridian_concat(List args) {
     if(args.length != 1) {
-        Meridian_error("expected one arg");
+        MERIDIAN_ERROR("expected one arg");
         return ATOM_NIL();
     }
 
@@ -109,7 +163,7 @@ Atom meridian_concat(List args) {
 
 Atom meridian_println(List args) {
     if(args.length == 0) {
-        Meridian_error("expected one arg");
+        MERIDIAN_ERROR("expected one arg");
         return ATOM_NIL();
     }
 
@@ -128,13 +182,16 @@ void Meridian_builtin() {
     BUILTIN("*", meridian_mul);
     BUILTIN("/", meridian_div);
 
+    BUILTIN("=", meridian_eq);
+    BUILTIN("!", meridian_not);
+
     GLOBAL("true", ATOM_BOOLEAN(true));
-    GLOBAL("false", ATOM_NUMBER(false));
+    GLOBAL("false", ATOM_BOOLEAN(false));
 
     BUILTIN("println", meridian_println);
 
-    //BUILTIN("head", meridian_head);
-    //BUILTIN("tail", meridian_tail);
+    BUILTIN("head", meridian_head);
+    BUILTIN("tail", meridian_tail);
 }
 
 #define DEBUG_PRINT
@@ -167,7 +224,7 @@ void Meridian_run_file(const char* path) {
     FILE* file = fopen(path, "r");
 
     if(!file) {
-        Meridian_error("Couldnt not find file");
+        MERIDIAN_ERROR("Couldnt not find file");
         return;
     }
 

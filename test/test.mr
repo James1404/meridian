@@ -3,4 +3,7 @@
 
 (println (double_square 25))
 
+(def != (fn (x y) (! (= x y))))
+
 (println (/ 1 2))
+(println (!= 5 1))
