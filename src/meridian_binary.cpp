@@ -1,4 +1,4 @@
-#include "meridian.h"
+#include "meridian.hpp"
 
 int main() {
     Meridian_init();

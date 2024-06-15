@@ -1,7 +1,7 @@
-#include "meridian_atom.h"
+#include "meridian_atom.hpp"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdlib.hpp>
+#include <stdio.hpp>
 
 #define DEFINE_ATOMTYPE_TOSTRING(name, type)\
     case ATOM_TYPE_ ## name: return String_make(#name); break;

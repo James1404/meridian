@@ -1,8 +1,8 @@
-#include "meridian_env.h"
-#include "meridian_error.h"
+#include "meridian_env.hpp"
+#include "meridian_error.hpp"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdlib.hpp>
+#include <stdio.hpp>
 
 static Env env;
 

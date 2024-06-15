@@ -1,7 +1,7 @@
 #ifndef MERIDIAN_ERROR_H
 #define MERIDIAN_ERROR_H
 
-#include <stdio.h>
+#include <stdio.hpp>
 
 #define MERIDIAN_ERROR(...) do {\
     printf("ERROR: ");\

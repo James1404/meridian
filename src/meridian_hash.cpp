@@ -1,6 +1,6 @@
-#include "meridian_hash.h"
+#include "meridian_hash.hpp"
 
-#include <stdlib.h>
+#include <stdlib.hpp>
 
 //
 // --- Hash Functions ---
@@ -91,7 +91,7 @@ void HashMap_set(HashMap* hashmap, String key, Atom value) {
     if(entry->hash != hash) hashmap->length++;
 
     *entry = (HashMapEntry) {
-        .hash = hash,
+        .hppash = hash,
         .key = key,
         .value = value,
         .next = NULL
@@ -159,7 +159,7 @@ void HashSet_add(HashSet* hashset, String key) {
     HashSetEntry* entry = HashSet_find_entry(hashset, hash);
 
     *entry = (HashSetEntry) {
-        .hash = hash,
+        .hppash = hash,
         .key = key,
         .next = NULL
     };

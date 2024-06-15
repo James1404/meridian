@@ -1,8 +1,8 @@
 #ifndef MERIDIAN_ATOM_H
 #define MERIDIAN_ATOM_H
 
-#include "meridian_common.h"
-#include "meridian_string.h"
+#include "meridian_common.hpp"
+#include "meridian_string.hpp"
 
 typedef struct Atom Atom;
 

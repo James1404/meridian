@@ -1,6 +1,6 @@
-#include "meridian_printer.h"
+#include "meridian_printer.hpp"
 
-#include <stdio.h>
+#include <stdio.hpp>
 
 void Printer_Atom(Atom atom) {
     switch(atom.ty) {

@@ -1,9 +1,9 @@
 #ifndef MERIDIAN_HASH_H
 #define MERIDIAN_HASH_H
 
-#include "meridian_common.h"
+#include "meridian_common.hpp"
 
-#include "meridian_atom.h"
+#include "meridian_atom.hpp"
 
 typedef usize Hash;
 

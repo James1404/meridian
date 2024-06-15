@@ -1,15 +1,12 @@
-#include "meridian.h"
+#include "meridian.hpp"
 
-#include "meridian_allocator.h"
-#include "meridian_common.h"
-#include "meridian_env.h"
-#include "meridian_error.h"
-#include "meridian_eval.h"
-#include "meridian_printer.h"
-#include "meridian_reader.h"
-
-#include <stdio.h>
-#include <stdlib.h>
+#include "meridian_allocator.hpp"
+#include "meridian_common.hpp"
+#include "meridian_env.hpp"
+#include "meridian_error.hpp"
+#include "meridian_eval.hpp"
+#include "meridian_printer.hpp"
+#include "meridian_reader.hpp"
 
 void Meridian_init() {
     MainAllocator_init();

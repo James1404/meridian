@@ -1,8 +1,8 @@
-#include "meridian_eval.h"
-#include "meridian_error.h"
-#include "meridian_env.h"
+#include "meridian_eval.hpp"
+#include "meridian_error.hpp"
+#include "meridian_env.hpp"
 
-#include <stdlib.h>
+#include <stdlib.hpp>
 
 void Eval_run(Atom atom) {
     Eval_Atom(atom);

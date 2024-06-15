@@ -1,6 +1,6 @@
-#include "meridian_allocator.h"
+#include "meridian_allocator.hpp"
 
-#include <stdlib.h>
+#include <stdlib.hpp>
 
 static Chunk* Chunk_make(Allocator* parent) {
     Chunk* c = malloc(sizeof(Chunk));

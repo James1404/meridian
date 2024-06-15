@@ -1,9 +1,9 @@
-#include "meridian_string.h"
+#include "meridian_string.hpp"
 
-#include "meridian_allocator.h"
+#include "meridian_allocator.hpp"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.hpp>
+#include <stdlib.hpp>
 
 String String_make(const byte* raw) {
     String r;

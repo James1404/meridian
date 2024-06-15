@@ -1,9 +1,9 @@
 #ifndef MERIDIAN_READER_H
 #define MERIDIAN_READER_H
 
-#include "meridian_atom.h"
-#include "meridian_string.h"
-#include "meridian_common.h"
+#include "meridian_atom.hpp"
+#include "meridian_string.hpp"
+#include "meridian_common.hpp"
 
 typedef struct {
     String src;

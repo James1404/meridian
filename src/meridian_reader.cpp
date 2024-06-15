@@ -1,9 +1,9 @@
-#include "meridian_reader.h"
+#include "meridian_reader.hpp"
 
-#include "meridian_error.h"
+#include "meridian_error.hpp"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdlib.hpp>
+#include <stdio.hpp>
 
 static bool Reader_eof(Reader* reader) {
     return reader->position >= reader->src.length;
