@@ -23,6 +23,14 @@ endif()
 
 set(meridian_CURRENT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_subdirectory(${meridian_CURRENT_DIR}/deps/fmt)
+add_subdirectory(${meridian_CURRENT_DIR}/deps/spdlog)
+
+target_link_libraries(meridian PUBLIC
+  fmt::fmt
+  spdlog::spdlog
+)
+
 file(GLOB meridian_src
 	${meridian_CURRENT_DIR}/src/*.cpp
 	${meridian_CURRENT_DIR}/src/*.c

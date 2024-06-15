@@ -3,6 +3,15 @@
 
 #include <cstdint>
 
+#include <vector>
+#include <string>
+
+using String = std::string;
+using StringRef = std::string_view;
+
+template<typename T>
+using ArrayList = std::vector<T>;
+
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
 using u32 = std::uint32_t;

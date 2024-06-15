@@ -1,40 +1,26 @@
 #ifndef MERIDIAN_ATOM_H
 #define MERIDIAN_ATOM_H
 
+#include <functional>
+
 #include "meridian_common.hpp"
-#include "meridian_string.hpp"
 
-typedef struct Atom Atom;
+struct Atom;
 
-typedef struct {
-    u64 length, allocated;
-    Atom* data;
-} List;
+using List = ArrayList<Atom>;
 
-List List_make();
-void List_free(List* list);
+struct Fn {
+    ArrayList<Atom*> args;
+    Atom* body = NULL;
+}; 
 
-void List_push(List* list, Atom atom);
-Atom List_at(List* list, u64 index);
+using Intrinsic = std::function<Atom(List)>;
 
-typedef struct {
-    u64 args_length, args_allocated;
-    String* args;
-
-    Atom* body;
-} Fn;
-
-Fn Fn_make();
-void Fn_free(Fn* fn);
-void Fn_push(Fn* fn, String arg);
-
-typedef Atom (*Intrinsic)(List args);
-
-typedef struct {
+struct FFI_Func {
     void* ptr;
-} FFI_Func;
+};
 
-typedef enum {
+enum AtomType {
     ATOM_NUMBER,
     ATOM_BOOLEAN,
     ATOM_STRING,
@@ -45,10 +31,10 @@ typedef enum {
     ATOM_FFI,
     ATOM_LIST,
     ATOM_NIL,
-} AtomType;
+};
 
 struct Atom {
-    AtomType ty;
+    AtomType ty = ATOM_NIL;
     union {
         f64 number;
         bool boolean;
@@ -58,22 +44,21 @@ struct Atom {
         Intrinsic intrinsic;
         FFI_Func ffi;
     } as;
+
+    Atom() = default;
+    Atom(Atom& other) = default;
+
+    static Atom Number(f64 v);
+    static Atom Boolean(bool v);
+    static Atom String(::String v);
+    static Atom Symbol(::String v);
+    static Atom Keyword(::String v);
+    static Atom Fn(::Fn v);
+    static Atom Intrinsic(::Intrinsic v);
+    static Atom FFI();
+    static Atom List();
+    static Atom NIL();
 };
-
-//
-// --- Builders ---
-//
-#define ATOM_NUMBER(value) ((Atom) { .ty = ATOM_NUMBER, .as.number = value  })
-#define ATOM_BOOLEAN(value) ((Atom) { .ty = ATOM_BOOLEAN, .as.boolean = value  })
-#define ATOM_STRING(value) ((Atom) { .ty = ATOM_STRING, .as.string = value  })
-#define ATOM_SYMBOL(value) ((Atom) { .ty = ATOM_SYMBOL, .as.string = value  })
-#define ATOM_KEYWORD(value) ((Atom) { .ty = ATOM_KEYWORD, .as.string = value  })
-#define ATOM_FN() ((Atom) { .ty = ATOM_FN, .as.fn = Fn_make() })
-#define ATOM_INTRINSIC(fn) ((Atom) { .ty = ATOM_INTRINSIC, .as.intrinsic = fn })
-#define ATOM_FFI() ((Atom) { .ty = ATOM_FFI })
-#define ATOM_LIST() ((Atom) { .ty = ATOM_LIST, .as.list = List_make()  })
-#define ATOM_NIL() ((Atom) { .ty = ATOM_NIL })
-
 //
 // --- Getters ---
 //

@@ -5,21 +5,21 @@
 #include <stdlib.hpp>
 #include <stdio.hpp>
 
-static bool Reader_eof(Reader* reader) {
-    return reader->position >= reader->src.length;
+bool Reader::eof() {
+    return position >= src.length();
 }
 
-static char Reader_current(Reader* reader) {
-    return String_index(reader->src, reader->position);
+char Reader::Current() {
+    return src[position];
 }
 
-static void Reader_advance(Reader* reader) {
-    reader->position++;
+void Reader::Advance() {
+    position++;
 }
 
-static bool Reader_match(Reader* reader, char expected) {
-    if(Reader_current(reader) == expected) {
-        Reader_advance(reader);
+bool Reader::Match(char expected) {
+    if(Current() == expected) {
+        Advance();
         return true;
     }
 
@@ -63,7 +63,7 @@ static bool isSymbolChar(char c) {
     return isSymbolCharStart(c) || isNumber(c);
 }
 
-Reader Reader_make(String src) {
+Reader Reader::make(String src) {
     return (Reader) {
         .src = src,
         .start = 0,
@@ -72,121 +72,119 @@ Reader Reader_make(String src) {
     };
 }
 
-void Reader_free(Reader* reader) {
+void Reader::free() {
 }
 
-static bool Reader_SkipWhitespace(Reader* reader) {
-    char c = Reader_current(reader);
+bool Reader::SkipWhitespace() {
+    char c = Current();
 
     switch(c) {
         case '\n':
-            reader->line++;
+            line++;
         case ' ':
         case '\t':
         case '\r':
-            Reader_advance(reader);
+            Advance();
             return true;
         default:
             return false;
     }
 }
 
-static void Reader_SkipAllWhitespace(Reader* reader) {
-    while(Reader_SkipWhitespace(reader));
+void Reader::SkipAllWhitespace() {
+    while(SkipWhitespace());
 }
 
-static Atom Reader_ReadList(Reader* reader);
+Atom Reader::ReadSymbol() {
+    SkipAllWhitespace();
 
-static Atom Reader_ReadSymbol(Reader* reader) {
-    Reader_SkipAllWhitespace(reader);
-
-    char c = Reader_current(reader);
-    reader->start = reader->position;
+    char c = Current();
+    start = position;
 
     if(isSymbolCharStart(c)) {
         while(isSymbolChar(c)) {
-            Reader_advance(reader);
-            c = Reader_current(reader);
+            Advance();
+            c = Current();
         }
 
-        String text = String_substr(reader->src, reader->start, reader->position - reader->start);
+        String text = src.substr(start, position - start);
 
-        return ATOM_SYMBOL(text);
+        return Atom::Symbol(text);
     }
 
-    return ATOM_NIL();
+    return Atom::NIL();
 }
 
-static Atom Reader_ReadAtom(Reader* reader) {
-    Reader_SkipAllWhitespace(reader);
+Atom Reader::ReadAtom() {
+    SkipAllWhitespace();
 
-    char c = Reader_current(reader);
-    reader->start = reader->position;
+    char c = Current();
+    start = position;
 
     if(c == '"') {
         do {
-            Reader_advance(reader);
-        } while(Reader_current(reader) != '"');
+            Advance();
+        } while(Current());
 
-        u64 strStart = reader->start + 1;
-        u64 strLength = (reader->position - reader->start) - 1;
+        u64 strStart = start + 1;
+        u64 strLength = (position - start) - 1;
 
-        Reader_advance(reader);
+        Advance();
 
-        String text = String_substr(reader->src, strStart, strLength);
-        return ATOM_STRING(text);
+        String text = src.substr(strStart, strLength);
+        return Atom::String(text);
     }
     
     if(isNumber(c)) {
         while(isNumber(c) || c == '.') {
-            Reader_advance(reader);
-            c = Reader_current(reader);
+            Advance();
+            c = Current();
         }
 
-        String text = String_substr(reader->src, reader->start, reader->position - reader->start);
+        String text = src.substr(start, position - start);
 
-        return ATOM_NUMBER(strtod(text.data, NULL));
+        return Atom::Number(stold(text, NULL));
     }
 
     if(c == '(') {
-        return Reader_ReadList(reader);
+        return ReadList();
     }
 
     if(isSymbolCharStart(c)) {
-        return Reader_ReadSymbol(reader);
+        return ReadSymbol();
     }
 
     printf("ERROR INVALID ATOM :: '%02x'\n", (unsigned char) c);
-    return ATOM_NIL();
+    return Atom::NIL();
 }
 
-static Atom Reader_ReadList(Reader* reader) {
-    Reader_SkipAllWhitespace(reader);
+Atom Reader::ReadList() {
+    SkipAllWhitespace();
 
-    Atom list = ATOM_LIST();
+    Atom list = Atom::List();
 
-    if(Reader_match(reader, '(')) {
-        while(!Reader_match(reader, ')')) {
-            List_push(&GET_ATOM_LIST(list), Reader_ReadAtom(reader));
-            Reader_SkipAllWhitespace(reader);
+    if(Match('(') {
+        while(!Match(')') {
+            List_push(&GET_ATOM_LIST(list), ReadAtom();
+            SkipAllWhitespace();
         }
     }
 
     return list;
 }
 
-static Atom Reader_ReadTopLevel(Reader* reader) {
-    Atom list = ATOM_LIST();
+Atom Reader::ReadTopLevel() {
+    Atom list = Atom::List();
 
-    while(!Reader_eof(reader)) {
-        List_push(&GET_ATOM_LIST(list), Reader_ReadAtom(reader));
-        Reader_SkipAllWhitespace(reader);
+    while(!eof() {
+        List_push(&GET_ATOM_LIST(list), ReadAtom();
+        SkipAllWhitespace();
     }
 
     return list;
 }
 
-void Reader_run(Reader* reader) {
-    reader->global = Reader_ReadTopLevel(reader);
+void Reader::run() {
+    global = ReadTopLevel();
 }
 

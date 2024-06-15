@@ -2,19 +2,35 @@
 #define MERIDIAN_READER_H
 
 #include "meridian_atom.hpp"
-#include "meridian_string.hpp"
 #include "meridian_common.hpp"
 
-typedef struct {
+struct Reader {
     String src;
     u64 start, position, line;
 
     Atom global;
-} Reader;
 
-Reader Reader_make(String src);
-void Reader_free(Reader* reader);
+    static Reader make(String src);
 
-void Reader_run(Reader* reader);
+    void free();
+    void run();
+
+private:
+    bool eof();
+
+    bool SkipWhitespace();
+    void SkipAllWhitespace();
+
+    Atom ReadList();
+    Atom ReadSymbol();
+
+    Atom ReadTopLevel();
+
+    bool Match(char expected);
+
+    char Current();
+
+    void Advance();
+};
 
 #endif//MERIDIAN_READER_H

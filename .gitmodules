@@ -1,3 +1,6 @@
 [submodule "deps/fmt"]
 	path = deps/fmt
 	url = git@github.com:fmtlib/fmt.git
+[submodule "deps/spdlog"]
+	path = deps/spdlog
+	url = git@github.com:gabime/spdlog.git
